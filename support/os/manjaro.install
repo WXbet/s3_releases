@@ -32,6 +32,21 @@ do
 		xz)
 			inst="xz-utils";
 			;;
+		scp)
+			inst="scponly";
+			;;
+		makeinfo)
+			inst="texinfo";
+			;;
+		python3-config)
+			inst="python3-devel";
+			;;
+		libtool|libtoolize)
+			inst="libtool";
+			;;
+		cmp)
+			inst="diffutils";
+			;;
 		esac;
 		echo -e "$w_l  select $g_l$e$y_l\tfrom: $inst";
 		packages="$packages $inst";
@@ -55,6 +70,9 @@ do
 		pthread.h)
 				inst="libc-dev-bin";
 			;;
+		ncurses)
+				inst="ncurses";
+			;;
 		esac;
 		echo -e "$w_l  select $g_l$e$y_l\tfrom: $inst";
 		packages="$packages $inst";
@@ -69,16 +87,19 @@ do
 		libccidtwin.so)
 				inst="ccid";
 			;;
+		libstdc++.so.6)
+				inst="gcc-libs";
+			;;
 		esac;
 		echo -e "$w_l  select $g_l$e$y_l\tfrom: $inst";
 		packages="$packages $inst";
 	fi;
 done;
 
-if [ "$(uname -m)" == "x86_64" ] && [ ! -f /usr/lib32/libz.so.1 ]; then
-	if [ ! -f /usr/lib32/libz.so.1 ]; then
+if [ "$(uname -m)" == "x86_64" ] && [ ! -f /usr/lib/libz.so ]; then
+	if [ ! -f /usr/lib/libz.so ]; then
 		e="zlib32";
-		inst="lib32z1";
+		inst="lib32-zlib";
 		echo -e "$w_l  select $g_l$e$y_l\tfrom: $inst";
 		packages="$packages $inst";
 	fi
@@ -98,30 +119,6 @@ if [ ${#packages} -gt 0 ]; then
 		echo -e "$r_l  failed!";
 	fi
 fi
-
-#if hash upx 2>/dev/null; then
-#	upxversion=($(upx -V | awk 'NR==1 { verok=$2>=3.91; printf "%.2f %i", $2, verok }'));
-#	if [ ${upxversion[1]} == 0 ]; then
-#		[ -f "$bindir/upx" ] && rm -f "$bindir/upx" &>/dev/null;
-#		if [ "$(uname -m)" == "x86_64" ]; then
-#			upxarch="upx-3.95-amd64_linux";
-#		else
-#			upxarch="upx-3.95-i386_linux";
-#		fi
-#		upxarchive=$upxarch".tar.bz2";
-#		[ -f "$dldir/$upxarchive" ] && rm -f "$dldir/$upxarchive" &>/dev/null;
-#		upxurl="http://upx.sourceforge.net/download/$upxarchive";
-#		echo -e "$w_l  get newer$g_l upx$y_l\tfrom: $upxurl";
-#		echo "+++ $(date): wget $upxurl" >> "$install_log";
-#		if wget --directory-prefix="$dldir" --append-output="$install_log" $upxurl; then
-#			echo "+++ $(date): tar xjvf $upxarchive" >> "$install_log";
-#			tar xjvf "$dldir"/$upxarchive --directory="$bindir" $upxarch/upx --strip-components=1 >> "$install_log" 2>&1 || failed=1;
-#			[ -f "$dldir"/$upxarchive ] && rm -f "$dldir"/$upxarchive &>/dev/null;
-#		else
-#			failed=1;
-#		fi
-#	fi
-#fi
 
 [ $failed == 1 ] && echo -e "\n$r_l  Installation with errors - see: $install_log";
 
